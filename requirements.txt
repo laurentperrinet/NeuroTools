@@ -4,5 +4,4 @@ matplotlib
 IPython
 tables>=1.4
 PIL
-rpy
 rpy2
