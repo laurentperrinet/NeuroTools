@@ -66,29 +66,29 @@ class ShelveDataStoreTest(unittest.TestCase):
             new_data = ds.retrieve(c2, 'data')
             self.assertEqual(c2.data, new_data)
         
-        
-class DjangoORMDataStoreTest(unittest.TestCase):
-        
-    def setUp(self):
-        self.ds = DjangoORMDataStore(database_parameters={'DATABASE_ENGINE': 'sqlite3',
-                                                          'DATABASE_NAME': '/tmp/test_datastore.db'},
-                                     data_root_dir='/tmp/test_datastore_django') 
-    
-    def tearDown(self):
-        if os.path.exists('/tmp/test_datastore.db'):
-            os.remove('/tmp/test_datastore.db')
-        if os.path.exists('/tmp/test_datastore_django'):
-            shutil.rmtree('/tmp/test_datastore_django')
-        
-    #def test_create(self):
-    #    pass
-    
-    def test_store_retrieve(self):
-        c = DummyComponent()
-        self.ds.store(c, 'data', c.data)
-        new_data = self.ds.retrieve(c, 'data')
-        self.assertEqual(c.data, new_data)
-    
-        
+#         
+# class DjangoORMDataStoreTest(unittest.TestCase):
+#         
+#     def setUp(self):
+#         self.ds = DjangoORMDataStore(database_parameters={'DATABASE_ENGINE': 'sqlite3',
+#                                                           'DATABASE_NAME': '/tmp/test_datastore.db'},
+#                                      data_root_dir='/tmp/test_datastore_django') 
+#     
+#     def tearDown(self):
+#         if os.path.exists('/tmp/test_datastore.db'):
+#             os.remove('/tmp/test_datastore.db')
+#         if os.path.exists('/tmp/test_datastore_django'):
+#             shutil.rmtree('/tmp/test_datastore_django')
+#         
+#     #def test_create(self):
+#     #    pass
+#     
+#     def test_store_retrieve(self):
+#         c = DummyComponent()
+#         self.ds.store(c, 'data', c.data)
+#         new_data = self.ds.retrieve(c, 'data')
+#         self.assertEqual(c.data, new_data)
+#     
+#         
 if __name__ == '__main__':
     unittest.main()
