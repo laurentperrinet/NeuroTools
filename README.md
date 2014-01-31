@@ -67,9 +67,11 @@ NeuroTools has evolved in different flavours:
 Installation
 ============
 
-For installation instructions, see the ``INSTALL`` file. 
+To install use:
 
+    pip install neurotools
 
+For more installation instructions, see the ``INSTALL`` file. 
 
 Documentation
 =============
