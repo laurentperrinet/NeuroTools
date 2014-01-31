@@ -26,10 +26,8 @@ class AnalysisTest(unittest.TestCase):
         self.gau = scipy.io.loadmat(self.p + '/analysis/make_kernel/gau.mat')
         self.alp = scipy.io.loadmat(self.p + '/analysis/make_kernel/alp.mat')
         self.exp = scipy.io.loadmat(self.p + '/analysis/make_kernel/exp.mat')
-        self.alp_reversed = scipy.io.loadmat(
-            self.p + '/analysis/make_kernel/alp_reversed.mat')
-        self.exp_reversed = scipy.io.loadmat(
-            self.p + '/analysis/make_kernel/exp_reversed.mat')
+        self.alp_reversed = scipy.io.loadmat(self.p + '/analysis/make_kernel/alp_reversed.mat')
+        self.exp_reversed = scipy.io.loadmat(self.p + '/analysis/make_kernel/exp_reversed.mat')
 
         #Used for the testcases of the crosscorrelate function
         spk = signals.load_spikelist(self.p + '/analysis/crosscorrelate/spike_data')
@@ -69,7 +67,7 @@ class AnalysisTest(unittest.TestCase):
         true_norm = self.box['norm'].ravel()[0]
         true_m_idx = self.box['m_idx'].ravel()[0] - 1
 
-        kernel, norm, m_idx = analysis.make_kernel('BOX', 1, 0.001)
+        kernel, norm, m_idx = analysis.make_kernel('BOX', 1., 1.)
 
         numpy.testing.assert_array_almost_equal(true_kernel, kernel, decimal = 3
                                                 )
@@ -81,7 +79,7 @@ class AnalysisTest(unittest.TestCase):
         true_norm = self.tri['norm'].ravel()[0]
         true_m_idx = self.tri['m_idx'].ravel()[0] - 1
 
-        kernel, norm, m_idx = analysis.make_kernel('TRI', 1, 0.001)
+        kernel, norm, m_idx = analysis.make_kernel('TRI', 1., 1.)
 
         numpy.testing.assert_array_almost_equal(true_kernel, kernel, decimal = 3
                                                 )
@@ -93,7 +91,7 @@ class AnalysisTest(unittest.TestCase):
         true_norm = self.epa['norm'].ravel()[0]
         true_m_idx = self.epa['m_idx'].ravel()[0] - 1
 
-        kernel, norm, m_idx = analysis.make_kernel('EPA', 1, 0.001)
+        kernel, norm, m_idx = analysis.make_kernel('EPA', 1., 1.)
 
         numpy.testing.assert_array_almost_equal(true_kernel, kernel, decimal = 3
                                                 )
@@ -105,7 +103,7 @@ class AnalysisTest(unittest.TestCase):
         true_norm = self.gau['norm'].ravel()[0]
         true_m_idx = self.gau['m_idx'].ravel()[0] - 1
 
-        kernel, norm, m_idx = analysis.make_kernel('GAU', 1, 0.001)
+        kernel, norm, m_idx = analysis.make_kernel('GAU', 1., 1.)
 
         numpy.testing.assert_array_almost_equal(true_kernel, kernel, decimal = 3
                                                 )
@@ -117,7 +115,7 @@ class AnalysisTest(unittest.TestCase):
         true_norm = self.alp['norm'].ravel()[0]
         true_m_idx = self.alp['m_idx'].ravel()[0] - 1
 
-        kernel, norm, m_idx = analysis.make_kernel('ALP', 1, 0.001)
+        kernel, norm, m_idx = analysis.make_kernel('ALP', 1., 1.)
 
         numpy.testing.assert_array_almost_equal(true_kernel, kernel, decimal = 3
                                                 )
@@ -129,7 +127,7 @@ class AnalysisTest(unittest.TestCase):
         true_norm = self.exp['norm'].ravel()[0]
         true_m_idx = self.exp['m_idx'].ravel()[0] - 1
 
-        kernel, norm, m_idx = analysis.make_kernel('EXP', 1, 0.001)
+        kernel, norm, m_idx = analysis.make_kernel('EXP', 1., 1.)
 
         numpy.testing.assert_array_almost_equal(true_kernel, kernel, decimal = 3
                                                 )
@@ -143,7 +141,7 @@ class AnalysisTest(unittest.TestCase):
         true_norm = self.alp_reversed['norm'].ravel()[0]
         true_m_idx = self.alp_reversed['m_idx'].ravel()[0] - 1
 
-        kernel, norm, m_idx = analysis.make_kernel('ALP', 1, 0.001,
+        kernel, norm, m_idx = analysis.make_kernel('ALP', 1., 1.,
                                                   direction = -1)
         numpy.testing.assert_array_almost_equal(true_kernel, kernel, decimal = 3
                                                 )
@@ -157,7 +155,7 @@ class AnalysisTest(unittest.TestCase):
         true_norm = self.exp_reversed['norm'].ravel()[0]
         true_m_idx = self.exp_reversed['m_idx'].ravel()[0] - 1
 
-        kernel, norm, m_idx = analysis.make_kernel('EXP', 1, 0.001, direction = -1)
+        kernel, norm, m_idx = analysis.make_kernel('EXP', 1., 1., direction = -1)
 
         numpy.testing.assert_array_almost_equal(true_kernel, kernel, decimal = 3
                                                 )

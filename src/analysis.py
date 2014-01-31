@@ -32,14 +32,14 @@ HAVE_MATPLOTLIB = check_dependency('matplotlib')
 if HAVE_MATPLOTLIB:
     import matplotlib
     matplotlib.use('Agg')
+else:
+    MATPLOTLIB_ERROR = "The matplotlib package was not detected"
 
 HAVE_PYLAB = check_dependency('pylab')
 if HAVE_PYLAB:
     import pylab
 else:
     PYLAB_ERROR = "The pylab package was not detected"
-if not HAVE_MATPLOTLIB:
-    MATPLOTLIB_ERROR = "The matplotlib package was not detected"
 
 
 def ccf(x, y, axis=None):
