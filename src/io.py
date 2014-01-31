@@ -30,10 +30,7 @@ from NeuroTools import check_dependency
 
 import os, logging, cPickle, numpy
 DEFAULT_BUFFER_SIZE = -1
-HAVE_TABLEIO        = check_dependency('TableIO')
 
-if HAVE_TABLEIO:
-    import TableIO
 
 
 class FileHandler(object):
@@ -141,7 +138,7 @@ class StandardTextFile(FileHandler):
         Fill the metadata from those of a NeuroTools object before writing the object
         """
         self.metadata['dimensions'] = str(object.dimensions)
-        if len(object.id_list > 0):
+        if len(object.id_list) > 0:
             self.metadata['first_id'] = numpy.min(object.id_list)
             self.metadata['last_id']  = numpy.max(object.id_list)
         if hasattr(object, "dt"):
@@ -177,27 +174,24 @@ class StandardTextFile(FileHandler):
         """
         Load data from a text file and returns an array of the data
         """
-        if HAVE_TABLEIO:
-            data = numpy.fliplr(TableIO.readTableAsArray(self.filename, skipchar))
-        else:
-            myfile   = open(self.filename, "r", DEFAULT_BUFFER_SIZE)
-            contents = myfile.readlines()
-            myfile.close()
-            data   = []
-            header = True
-            idx    = 0
-            while header and idx < len(contents):
-                if contents[idx][0] != skipchar:
-                    header = False
-                    break
-                idx += 1
-            for i in xrange(idx, len(contents)):
-                line = contents[i].strip().split(sepchar)
-                id   = [float(line[-1])]
-                id  += map(float, line[0:-1])
-                data.append(id)
-            logging.debug("Loaded %d lines of data from %s" % (len(data), self))
-            data = numpy.array(data, numpy.float32)
+        myfile   = open(self.filename, "r", DEFAULT_BUFFER_SIZE)
+        contents = myfile.readlines()
+        myfile.close()
+        data   = []
+        header = True
+        idx    = 0
+        while header and idx < len(contents):
+            if contents[idx][0] != skipchar:
+                header = False
+                break
+            idx += 1
+        for i in xrange(idx, len(contents)):
+            line = contents[i].strip().split(sepchar)
+            id   = [float(line[-1])]
+            id  += map(float, line[0:-1])
+            data.append(id)
+        logging.debug("Loaded %d lines of data from %s" % (len(data), self))
+        data = numpy.array(data, numpy.float32)
         return data
     
     def write(self, object):
@@ -239,7 +233,7 @@ class StandardTextFile(FileHandler):
 
 
 class StandardPickleFile(FileHandler):
-    
+    # There's something kinda wrong with this right now...
     def __init__(self, filename):
         FileHandler.__init__(self, filename) 
         self.metadata = {}
@@ -257,10 +251,11 @@ class StandardPickleFile(FileHandler):
     def __reformat(self, params, object):
         self.__fill_metadata(object)
         if 'id_list' in params and params['id_list'] != None:
-            if isinstance(params['id_list'], int): # allows to just specify the number of neurons
-                params['id_list'] = range(params['id_list'])
-            if params['id_list'] != range(int(self.metadata['first_id']), int(self.metadata['last_id'])+1):
-                object = object.id_slice(params['id_list'])
+            id_list = params['id_list']
+            if isinstance(id_list, int): # allows to just specify the number of neurons
+                params['id_list'] = range(id_list)
+            #if id_list != range(int(self.metadata['first_id']), int(self.metadata['last_id'])+1):
+            #    object = object.id_slice(params['id_list'])
         do_slice = False
         t_start = object.t_start
         t_stop  = object.t_stop

@@ -36,13 +36,13 @@ from NeuroTools.plotting import get_display, set_axis_limits, set_labels, Simple
 from pairs import *
 from intervals import *
 
-if check_dependency('psyco'):
-    import psyco
-    psyco.full()
 
 from NeuroTools import check_dependency
-HAVE_PYLAB = check_dependency('pylab')
 HAVE_MATPLOTLIB = check_dependency('matplotlib')
+if HAVE_MATPLOTLIB:
+    import matplotlib
+    matplotlib.use('Agg')
+HAVE_PYLAB = check_dependency('pylab')
 if HAVE_PYLAB:
     import pylab
 else:
@@ -411,7 +411,7 @@ class SpikeTrain(object):
         Examples:
             >> st = SpikeTrain(range(100),0.1,0,100)
             >> st.time_axis(10)
-                [ 0, 10, 20, 30, 40, 50, 60, 70, 80, 90n 100]
+                [ 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
         
         See also
             time_histogram
@@ -1042,7 +1042,8 @@ class SpikeList(object):
         if sub_list == None:
             return self.id_list
         elif type(sub_list) == int:
-            import ipdb; ipdb.set_trace()
+            #import ipdb
+            #ipdb.set_trace()
             return numpy.random.permutation(self.id_list)[0:sub_list]
         else:
             return sub_list
@@ -1568,7 +1569,7 @@ class SpikeList(object):
             return values, xaxis
         else:
             xlabel = " CV ISI"
-            ylabel = "% of Neurons"
+            ylabel = "\% of Neurons"
             set_labels(subplot, xlabel, ylabel)
             subplot.plot(xaxis, values, **kwargs)
             pylab.draw()
@@ -1717,7 +1718,7 @@ class SpikeList(object):
             else:
                 values, xaxis = numpy.histogram(rates, nbins)
             xlabel = "Average Firing Rate (Hz)"
-            ylabel = "% of Neurons"
+            ylabel = "\% of Neurons"
             set_labels(subplot, xlabel, ylabel)
             subplot.plot(xaxis, values/float(values.sum()), **kwargs)
             pylab.draw()

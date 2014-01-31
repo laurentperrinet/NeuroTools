@@ -1,8 +1,8 @@
 NeuroTools
 ==========
 
-NeuroTools is a collection of tools to support all tasks associated with the
-analysis of neural activity - from neurophysiology to neural simulations.
+NeuroTools is a collection of tools for representing and anlyzing
+neuroscientific data.
 
 NeuroTools is written in Python, and works best with PyNN, or one of the growing
 list of simulation engines with a Python front-end such as NEURON, NEST, PCSIM,

@@ -31,12 +31,14 @@ from NeuroTools import check_dependency
 
 
 # Check availability of pylab (essential!)
-if check_dependency('pylab'):
-    import pylab
 if check_dependency('matplotlib'):
+    from matplotlib import use
+    use('Agg')
     from matplotlib.figure import Figure
     from matplotlib.lines import Line2D
     from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+if check_dependency('pylab'):
+    import pylab
 
 # Check availability of PIL
 PILIMAGEUSE = check_dependency('PIL')
@@ -112,7 +114,7 @@ def pylab_params(fig_width_pt=246.0,
 
     params = {
             'axes.labelsize'  : text_fontsize,
-            'text.fontsize'   : text_fontsize,
+            'font.size'       : text_fontsize,
             'xtick.labelsize' : tick_labelsize,
             'ytick.labelsize' : tick_labelsize,
             'text.usetex'     : useTex,
