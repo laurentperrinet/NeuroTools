@@ -1,0 +1,29 @@
+ParameterSet(dict(
+
+PS3 = {
+  'mylist': [1, 2, 3, 4],
+  'true': False,
+  'yourlist': [1, 2, {'e': 5, 'f': 6}],
+  'ps2': {
+    'ps': {
+      'a': 1,
+      'b': 2,
+    },
+    'c': 19,
+  },
+  'null': None,
+  'mydict': {
+    'c': 3,
+    'd': 4,
+  },
+  'hello': 'world',
+  'cells': url('https://neuralensemble.org/svn/NeuroTools/trunk/std_params/PyNN/IF_cond_exp_gsfa_grr/muller_etal2007.param'),
+},
+
+ps = ParameterSet(dict(x=1,y=2,
+r = ParameterRange(['a','b'])
+)),
+range = ParameterRange([1.1,2.2]),
+range2 = ParameterRange([1,2])
+
+))
