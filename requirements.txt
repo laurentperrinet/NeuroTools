@@ -1,0 +1,8 @@
+numpy>=1.2
+scipy
+matplotlib
+IPython
+tables>=1.4
+PIL
+rpy
+rpy2

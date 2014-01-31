@@ -1,0 +1,20 @@
+# Idea from Matthew Brett of nipy. Pretend to be erlang and use apt, for now.
+language: erlang
+install:
+    - sudo apt-get install python-dev
+    - sudo apt-get install python-numpy
+    - sudo apt-get install python-scipy
+    - sudo apt-get install python-matplotlib
+    - sudo apt-get install ipython
+    - sudo apt-get install python-tables
+    - sudo apt-get install python-imaging
+    - sudo apt-get install python-rpy
+    - sudo apt-get install python-rpy2
+    - sudo apt-get install python-yaml
+    - sudo apt-get install python-pip
+    - sudo apt-get install python-nose
+    - sudo apt-get install python-coverage
+    - pip install --user -r requirements.txt --use-mirrors
+    - pip install --user . --use-mirrors
+script:
+    - nosetests --with-coverage --cover-package=neurotools
