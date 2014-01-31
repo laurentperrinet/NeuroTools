@@ -1,5 +1,4 @@
-include doc/*.txt
-include doc/README
+include doc/*.rst
 recursive-include examples *.py *.param
 include AUTHORS
 include INSTALL

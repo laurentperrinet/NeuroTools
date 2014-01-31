@@ -65,14 +65,14 @@ def rUpdate(targetDict, itemDict):
 # ====================================================================== #
 
 def get_experiment_list(params):
-    """                                                                                                                        
-    Takes params = dict with all parameters                                                                                    
-    Calculates cross product of all and returns a list with all experiments.                                                   
+    """
+    Takes params = dict with all parameters
+    Calculates cross product of all and returns a list with all experiments.
     """
     f=lambda ss,row=[],level=0: len(ss)>1 \
        and reduce(lambda x,y:x+y,[f(ss[1:],row+[i],level+1) for i in ss[0]]) \
        or [row+[i] for i in ss[0]]
-    
+
     tmplist=[]
 
     names = params.keys()
@@ -85,9 +85,9 @@ def get_experiment_list(params):
     return tmplist
 
 def get_experiment_dict(params):
-    """                                                                                                                        
-    Takes params = dict with all parameters                                                                                    
-    Calculates cross product of all and returns a dict with all experiments.                                                   
+    """
+    Takes params = dict with all parameters
+    Calculates cross product of all and returns a dict with all experiments.
     """
     f=lambda ss,row=[],level=0: len(ss)>1 \
        and reduce(lambda x,y:x+y,[f(ss[1:],row+[i],level+1) for i in ss[0]]) \
@@ -168,10 +168,9 @@ def get_connectivity(params):
 
 
 
-
+# TODO : this is not recommanded (SyntaxWarning)
+from NeuroTools.benchmark import *
 def run_simulations(model,url,tag):
-    # TODO : this is not recommanded (SyntaxWarning)
-    from NeuroTools.benchmark import *
     #lcn = LocalNetwork(0.1)
     #lcn = model
     print 'Simulations start'
