@@ -14,6 +14,7 @@ install:
     - sudo apt-get install python-pip
     - sudo apt-get install python-nose
     - sudo apt-get install python-coverage
+    - sudo apt-get install mencoder
     - pip install --user -r requirements.txt --use-mirrors
     - pip install --user . --use-mirrors
 script:
