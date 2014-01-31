@@ -36,7 +36,7 @@ sub-package, and requesting help on it:
 """
 
 __all__ = ['analysis', 'parameters', 'plotting', 'signals', 'stgen', 'io', 'datastore', 'utilities', 'spike2', 'random', 'optimize', 'tisean']
-__version__ = "0.1.0 (Asynchronous Astrocyte)"
+__version__ = "0.2.0 (Bursting Basketcell)"
 import warnings
 import platform
 from operator import __or__
