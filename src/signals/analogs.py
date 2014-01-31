@@ -2,14 +2,14 @@
 NeuroTools.signals.analogs
 ==================
 
-A collection of functions to create, manipulate and play with analog signals. 
+A collection of functions to create, manipulate and play with analog signals.
 
 Classes
 -------
 
-AnalogSignal     - object representing an analog signal, with its data. Can be used to do 
+AnalogSignal     - object representing an analog signal, with its data. Can be used to do
                    threshold detection, event triggered averages, ...
-AnalogSignalList - list of AnalogSignal objects, again with methods such as mean, std, plot, 
+AnalogSignalList - list of AnalogSignal objects, again with methods such as mean, std, plot,
                    and so on
 VmList           - AnalogSignalList object used for Vm traces
 ConductanceList  - AnalogSignalList object used for conductance traces
@@ -23,7 +23,7 @@ load_vmlist          - function to load a VmList object (inherits from AnalogSig
 load_currentlist     - function to load a CurrentList object (inherits from AnalogSignalList) from a file.
                        Same comments on format as previously.
 load_conductancelist - function to load a ConductanceList object (inherits from AnalogSignalList) from a file.
-                       Same comments on format as previously. load_conductancelist returns two 
+                       Same comments on format as previously. load_conductancelist returns two
                        ConductanceLists, one for the excitatory conductance and one for the inhibitory conductance
 load                 - a generic loader for all the previous load methods.
 
@@ -34,8 +34,6 @@ import os, re, numpy
 from NeuroTools import check_dependency, check_numpy_version
 from NeuroTools.io import *
 from NeuroTools.plotting import get_display, set_axis_limits, set_labels, SimpleMultiplot
-
-from neurotools import check_dependency
 
 HAVE_MATPLOTLIB = check_dependency('matplotlib')
 if HAVE_MATPLOTLIB:
@@ -60,7 +58,7 @@ from intervals import *
 class AnalogSignal(object):
     """
     AnalogSignal(signal, dt, t_start=0, t_stop=None)
-    
+
     Return a AnalogSignal object which will be an analog signal trace
 
     Inputs:
@@ -68,7 +66,7 @@ class AnalogSignal(object):
         dt      - the time step between two data points of the sampled analog signal
         t_start - begining of the signal, in ms.
         t_stop  - end of the SpikeList, in ms. If None, will be inferred from the data
-    
+
     Examples:
         >> s = AnalogSignal(range(100), dt=0.1, t_start=0, t_stop=10)
 
@@ -120,7 +118,7 @@ class AnalogSignal(object):
 
     def min(self):
         return self.signal.min()
-    
+
     def mean(self):
         return numpy.mean(self.signal)
 
@@ -139,15 +137,15 @@ class AnalogSignal(object):
         else:
             norm = 0.
         return numpy.arange(self.t_start-norm, self.t_stop-norm, self.dt)
-    
+
     def time_offset(self, offset):
         """
         Add a time offset to the AnalogSignal object. t_start and t_stop are
         shifted from offset.
-         
+
         Inputs:
             offset - the time offset, in ms
-        
+
         Examples:
             >> as = AnalogSignal(arange(0,100,0.1),0.1)
             >> as.t_stop
@@ -159,30 +157,30 @@ class AnalogSignal(object):
         self.t_start += offset
         self.t_stop  += offset
 
-    
+
     def time_parameters(self):
         """
         Return the time parameters of the AnalogSignal (t_start, t_stop, dt)
         """
         return (self.t_start, self.t_stop, self.dt)
-    
-    
+
+
     def plot(self, ylabel="Analog Signal", display=True, kwargs={}):
         """
         Plot the AnalogSignal
-        
+
         Inputs:
             ylabel  - A string to sepcify the label on the yaxis.
             display - if True, a new figure is created. Could also be a subplot
-            kwargs  - dictionary contening extra parameters that will be sent to the plot 
+            kwargs  - dictionary contening extra parameters that will be sent to the plot
                       function
-        
+
         Examples:
             >> z = subplot(221)
             >> signal.plot(ylabel="Vm", display=z, kwargs={'color':'r'})
         """
         subplot   = get_display(display)
-        time_axis = self.time_axis()  
+        time_axis = self.time_axis()
         if not subplot or not HAVE_PYLAB:
             print PYLAB_ERROR
         else:
@@ -190,23 +188,23 @@ class AnalogSignal(object):
             set_labels(subplot, xlabel, ylabel)
             subplot.plot(time_axis, self.signal, **kwargs)
             pylab.draw()
-    
-    
+
+
     def time_slice(self, t_start, t_stop):
-        """ 
+        """
         Return a new AnalogSignal obtained by slicing between t_start and t_stop
-        
+
         Inputs:
             t_start - begining of the new SpikeTrain, in ms.
             t_stop  - end of the new SpikeTrain, in ms.
-        
+
         See also:
             interval_slice
         """
         assert t_start >= self.t_start
         assert t_stop <= self.t_stop
         assert t_stop > t_start
-        
+
         t = self.time_axis()
         i_start = int(round((t_start-self.t_start)/self.dt))
         i_stop = int(round((t_stop-self.t_start)/self.dt))
@@ -216,12 +214,12 @@ class AnalogSignal(object):
 
     def interval_slice(self, interval):
         """
-        Return only the parts of the AnalogSignal that are defined in the range of the interval. 
+        Return only the parts of the AnalogSignal that are defined in the range of the interval.
         The output is therefor a list of signal segments
-        
+
         Inputs:
             interval - The Interval to slice the AnalogSignal with
-        
+
         Examples:
             >> as.interval_slice(Interval([0,100],[50,150]))
 
@@ -241,28 +239,28 @@ class AnalogSignal(object):
 
         Inputs:
              threshold - Threshold
-             format    - when 'raw' the raw events array is returned, 
+             format    - when 'raw' the raw events array is returned,
                          otherwise this is a SpikeTrain object by default
              sign      - 'above' detects when the signal gets above the threshodl, 'below when it gets below the threshold'
-                
+
         Examples:
             >> aslist.threshold_detection(-55, 'raw')
                 [54.3, 197.4, 206]
         """
-        
+
         assert threshold is not None, "threshold must be provided"
 
         if sign is 'above':
             cutout = numpy.where(self.signal > threshold)[0]
         elif sign in 'below':
             cutout = numpy.where(self.signal < threshold)[0]
-            
+
         if len(cutout) <= 0:
             events = numpy.zeros(0)
         else:
             take = numpy.where(numpy.diff(cutout)>1)[0]+1
             take = numpy.append(0,take)
-            
+
             time = self.time_axis()
             events = time[cutout][take]
 
@@ -270,32 +268,32 @@ class AnalogSignal(object):
             return events
         else:
             return SpikeTrain(events,t_start=self.t_start,t_stop=self.t_stop)
-            
-                    
+
+
     def event_triggered_average(self, events, average = True, t_min = 0, t_max = 100, display = False, with_time = False, kwargs={}):
         """
-        Return the spike triggered averaged of an analog signal according to selected events, 
+        Return the spike triggered averaged of an analog signal according to selected events,
         on a time window t_spikes - tmin, t_spikes + tmax
         Can return either the averaged waveform (average = True), or an array of all the
         waveforms triggered by all the spikes.
-        
+
         Inputs:
-            events  - Can be a SpikeTrain object (and events will be the spikes) or just a list 
+            events  - Can be a SpikeTrain object (and events will be the spikes) or just a list
                       of times
-            average - If True, return a single vector of the averaged waveform. If False, 
+            average - If True, return a single vector of the averaged waveform. If False,
                       return an array of all the waveforms.
             t_min   - Time (>0) to average the signal before an event, in ms (default 0)
             t_max   - Time (>0) to average the signal after an event, in ms  (default 100)
             display - if True, a new figure is created. Could also be a subplot.
-            kwargs  - dictionary contening extra parameters that will be sent to the plot 
+            kwargs  - dictionary contening extra parameters that will be sent to the plot
                       function
-            
+
         Examples:
             >> vm.event_triggered_average(spktrain, average=False, t_min = 50, t_max = 150)
             >> vm.event_triggered_average(spktrain, average=True)
             >> vm.event_triggered_average(range(0,1000,10), average=False, display=True)
         """
-        
+
         if isinstance(events, SpikeTrain):
             events = events.spike_times
             ylabel = "Spike Triggered Average"
@@ -312,7 +310,7 @@ class AnalogSignal(object):
             result = numpy.zeros(N, float)
         else:
             result = []
-        
+
         # recalculate everything into timesteps, is more stable against rounding errors
         # and subsequent cutouts with different sizes
         events = numpy.floor(numpy.array(events)/self.dt)
@@ -320,7 +318,7 @@ class AnalogSignal(object):
         t_max_l = numpy.floor(t_max/self.dt)
         t_start = numpy.floor(self.t_start/self.dt)
         t_stop = numpy.floor(self.t_stop/self.dt)
-        
+
         for spike in events:
             if ((spike-t_min_l) >= t_start) and ((spike+t_max_l) < t_stop):
                 spike = spike - t_start
@@ -333,7 +331,7 @@ class AnalogSignal(object):
             result = result/Nspikes
         else:
             result = numpy.array(result)
-            
+
         if not subplot or not HAVE_PYLAB:
             if with_time:
                 return result, time_axis
@@ -351,7 +349,7 @@ class AnalogSignal(object):
                 result = numpy.sum(result, axis=0)/Nspikes
                 subplot.plot(time_axis, result, c='k', **kwargs)
             xmin, xmax, ymin, ymax = subplot.axis()
-                        
+
             subplot.plot([0,0],[ymin, ymax], c='r')
             set_axis_limits(subplot, -t_min, t_max, ymin, ymax)
             pylab.draw()
@@ -361,11 +359,11 @@ class AnalogSignal(object):
         Returns a dict containing new AnalogSignals cutout around events.
 
         Inputs:
-            events  - Can be a SpikeTrain object (and events will be the spikes) or just a list 
+            events  - Can be a SpikeTrain object (and events will be the spikes) or just a list
                       of times
             t_min   - Time (>0) to cut the signal before an event, in ms (default 100)
             t_max   - Time (>0) to cut the signal after an event, in ms  (default 100)
-        
+
         Examples:
             >> res = aslist.slice_by_events([100,200,300], t_min=0, t_max =100)
             >> print len(res)
@@ -377,7 +375,7 @@ class AnalogSignal(object):
             assert numpy.iterable(events), "events should be a SpikeTrain object or an iterable object"
         assert (t_min >= 0) and (t_max >= 0), "t_min and t_max should be greater than 0"
         assert len(events) > 0, "events should not be empty and should contained at least one element"
-        
+
         result = {}
         for index, spike in enumerate(events):
             if ((spike-t_min) >= self.t_start) and ((spike+t_max) < self.t_stop):
@@ -395,11 +393,11 @@ class AnalogSignal(object):
         have been masked out.
 
         Inputs:
-            events  - Can be a SpikeTrain object (and events will be the spikes) or just a list 
+            events  - Can be a SpikeTrain object (and events will be the spikes) or just a list
                       of times
             t_min   - Time (>0) to cut the signal before an event, in ms (default 100)
             t_max   - Time (>0) to cut the signal after an event, in ms  (default 100)
-        
+
         Examples:
             >> res = signal.mask_events([100,200,300], t_min=0, t_max =100)
 
@@ -407,25 +405,25 @@ class AnalogSignal(object):
         Author: Eilif Muller
         """
         from numpy import ma
-        
+
         if isinstance(events, SpikeTrain):
             events = events.spike_times
         else:
             assert numpy.iterable(events), "events should be a SpikeTrain object or an iterable object"
         assert (t_min >= 0) and (t_max >= 0), "t_min and t_max should be greater than 0"
         assert len(events) > 0, "events should not be empty and should contained at least one element"
-        
+
         result = AnalogSignal(self.signal, self.dt, self.t_start, self.t_stop)
         result.signal = ma.masked_array(result.signal, None)
 
         for index, spike in enumerate(events):
             t_start_new = numpy.max([spike-t_min, self.t_start])
             t_stop_new = numpy.min([spike+t_max, self.t_stop])
-            
+
             i_start = int(round(t_start_new/self.dt))
             i_stop = int(round(t_stop_new/self.dt))
             result.signal.mask[i_start:i_stop]=True
-                      
+
         return result
 
 
@@ -437,11 +435,11 @@ class AnalogSignal(object):
         Events should be sorted in chronological order
 
         Inputs:
-            events  - Can be a SpikeTrain object (and events will be the spikes) or just a list 
+            events  - Can be a SpikeTrain object (and events will be the spikes) or just a list
                       of times
             t_min   - Time (>0) to cut the signal before an event, in ms (default 100)
             t_max   - Time (>0) to cut the signal after an event, in ms  (default 100)
-        
+
         Examples:
             >> res = aslist.slice_by_events([100,200,300], t_min=0, t_max =10)
             >> print len(res)
@@ -459,13 +457,13 @@ class AnalogSignal(object):
         if len(events)==0:
             yield self
             return
-        
+
         t_last = self.t_start
         for spike in events:
             # skip spikes which aren't close to the signal interval
             if spike+t_min<self.t_start or spike-t_min>self.t_stop:
                 continue
-            
+
             t_min_local = numpy.max([t_last, spike-t_min])
             t_max_local = numpy.min([self.t_stop, spike+t_max])
 
@@ -488,7 +486,7 @@ class AnalogSignal(object):
         Inputs:
             signal  - Another AnalogSignal object.  It should have the same temporal dimension
                       and dt.
-        
+
         Examples:
             >> a1 = AnalogSignal(numpy.random.normal(size=1000),dt=0.1)
             >> a2 = AnalogSignal(numpy.random.normal(size=1000),dt=0.1)
@@ -511,13 +509,13 @@ class AnalogSignal(object):
         assert signal.signal.shape==self.signal.shape
 
         return mean(self.signal*signal.signal)-mean(self.signal)*(mean(signal.signal))
-    
+
 
 
 class AnalogSignalList(object):
     """
     AnalogSignalList(signals, id_list, dt=None, t_start=None, t_stop=None, dims=None)
-    
+
     Return a AnalogSignalList object which will be a list of AnalogSignal objects.
 
     Inputs:
@@ -527,16 +525,16 @@ class AnalogSignalList(object):
         t_start - begining of the SpikeList, in ms.
         t_stop  - end of the SpikeList, in ms. If None, will be infered from the data
         dims    - dimensions of the recorded population, if not 1D population
-    
+
     dt, t_start and t_stop are shared for all SpikeTrains object within the SpikeList
-    
+
     See also
         load_currentlist load_vmlist, load_conductancelist
     """
     def __init__(self, signals, id_list, dt, t_start=0, t_stop=None, dims=None):
         #logging.debug("Creating an AnalogSignalList. len(signals)=%d, min(id_list)=%d, max(id_list)=%d, dt=%g, t_start=%g, t_stop=%s, dims=%s" % \
         #                 (len(signals), min(id_list), max(id_list), dt, t_start, t_stop, dims))
-        
+
         if t_start is None:
             t_start = 0
         self.t_start        = float(t_start)
@@ -544,13 +542,13 @@ class AnalogSignalList(object):
         self.dt             = float(dt)
         self.dimensions     = dims
         self.analog_signals = {}
-        
+
         signals = numpy.array(signals)
         for id in id_list:
             signal = numpy.transpose(signals[signals[:,0] == id, 1:])[0]
             if len(signal) > 0:
                 self.analog_signals[id] = AnalogSignal(signal, self.dt, self.t_start, self.t_stop)
-        
+
         if id_list:
             signals = self.analog_signals.values()
             self.signal_length = len(signals[0])
@@ -560,12 +558,12 @@ class AnalogSignalList(object):
         else:
             logging.warning("id_list is empty")
             self.signal_length = 0
-        
+
         if t_stop is None:
             self.t_stop = self.t_start + self.signal_length*self.dt
 
     def id_list(self):
-        """ 
+        """
         Return the list of all the cells ids contained in the
         SpikeList object
         """
@@ -580,7 +578,7 @@ class AnalogSignalList(object):
         for id in self.id_list():
             aslist.append(id, self.analog_signals[id])
         return aslist
-    
+
     def __getitem__(self, id):
         if id in self.id_list():
             return self.analog_signals[id]
@@ -609,7 +607,7 @@ class AnalogSignalList(object):
 
     def __len__(self):
         return len(self.analog_signals)
-    
+
     def __iter__(self):
         return self.analog_signals.itervalues()
 
@@ -624,14 +622,14 @@ class AnalogSignalList(object):
     def append(self, id, signal):
         """
         Add an AnalogSignal object to the AnalogSignalList
-        
+
         Inputs:
             id     - the id of the new cell
             signal - the AnalogSignal object representing the new cell
-        
+
         The AnalogSignal object is sliced according to the t_start and t_stop times
         of the AnalogSignallist object
-        
+
         See also
             __setitem__
         """
@@ -651,10 +649,10 @@ class AnalogSignalList(object):
         """
         Add an offset to the whole AnalogSignalList object. All the id are shifted
         with a offset value.
-         
+
         Inputs:
             offset - the id offset
-        
+
         Examples:
             >> as.id_list()
                 [0,1,2,3,4]
@@ -672,13 +670,13 @@ class AnalogSignalList(object):
     def id_slice(self, id_list):
         """
         Return a new AnalogSignalList obtained by selecting particular ids
-        
+
         Inputs:
             id_list - Can be an integer (and then N random cells will be selected)
                       or a sublist of the current ids
-        
+
         The new AnalogSignalList inherits the time parameters (t_start, t_stop, dt)
-        
+
         See also
             time_slice
         """
@@ -694,11 +692,11 @@ class AnalogSignalList(object):
     def time_slice(self, t_start, t_stop):
         """
         Return a new AnalogSignalList obtained by slicing between t_start and t_stop
-        
+
         Inputs:
             t_start - begining of the new AnalogSignalList, in ms.
             t_stop  - end of the new AnalogSignalList, in ms.
-        
+
         See also
             id_slice
         """
@@ -710,12 +708,12 @@ class AnalogSignalList(object):
     def select_ids(self, criteria=None):
         """
         Return the list of all the cells in the AnalogSignalList that will match the criteria
-        expressed with the following syntax. 
-        
-        Inputs : 
-            criteria - a string that can be evaluated on a AnalogSignal object, where the 
+        expressed with the following syntax.
+
+        Inputs :
+            criteria - a string that can be evaluated on a AnalogSignal object, where the
                        AnalogSignal should be named ``cell''.
-        
+
         Exemples:
             >> aslist.select_ids("mean(cell.signal) > 20")
             >> aslist.select_ids("cell.std() < 0.2")
@@ -730,15 +728,15 @@ class AnalogSignalList(object):
     def convert(self, format="[values, ids]"):
         """
         Return a new representation of the AnalogSignalList object, in a user designed format.
-            format is an expression containing either the keywords values and ids, 
+            format is an expression containing either the keywords values and ids,
             time and id.
-       
+
         Inputs:
             format    - A template to generate the corresponding data representation, with the keywords
                         values and ids
 
-        Examples: 
-            >> aslist.convert("[values, ids]") will return a list of two elements, the 
+        Examples:
+            >> aslist.convert("[values, ids]") will return a list of two elements, the
                 first one being the array of all the values, the second the array of all the
                 corresponding ids, sorted by time
             >> aslist.convert("[(value,id)]") will return a list of tuples (value, id)
@@ -767,7 +765,7 @@ class AnalogSignalList(object):
     def raw_data(self):
         """
         Function to return a N by 2 array of all values and ids.
-        
+
         Examples:
             >> spklist.raw_data()
             >> array([[  1.00000000e+00,   1.00000000e+00],
@@ -775,7 +773,7 @@ class AnalogSignalList(object):
                       [  2.00000000e+00,   2.00000000e+00],
                          ...,
                       [  2.71530000e+03,   2.76210000e+03]])
-        
+
         See also:
             convert()
         """
@@ -786,7 +784,7 @@ class AnalogSignalList(object):
     def save(self, user_file):
         """
         Save the AnalogSignal in a text or binary file
-        
+
             user_file - The user file that will have its own read/write method
                         By default, if s tring is provided, a StandardTextFile object
                         will be created. Nevertheless, you can also
@@ -798,15 +796,15 @@ class AnalogSignalList(object):
         """
         as_loader = DataHandler(user_file, self)
         as_loader.save()
-    
+
     def mean(self):
         """
         Return the mean AnalogSignal after having performed the average of all the signals
         present in the AnalogSignalList
-        
+
         Examples:
             >> a.mean()
-        
+
         See also:
             std
         """
@@ -814,16 +812,16 @@ class AnalogSignalList(object):
         for id in self.id_list():
              result += self.analog_signals[id].signal
         return result/len(self)
-    
+
     def std(self):
         """
         Return the standard deviation along time between all the AnalogSignals contained in
         the AnalogSignalList
-        
+
         Examples:
             >> a.std()
                numpy.array([0.01, 0.2404, ...., 0.234, 0.234]
-               
+
         See also:
             mean
         """
@@ -843,11 +841,11 @@ class AnalogSignalList(object):
         The average is performed on a time window t_spikes - tmin, t_spikes + tmax
         Can return either the averaged waveform (average = True), or an array of all the
         waveforms triggered by all the spikes.
-        
+
         Inputs:
-            events  - Can be a SpikeList object (and events will be the spikes) or just a dict 
+            events  - Can be a SpikeList object (and events will be the spikes) or just a dict
                       of times
-            average - If True, return a single vector of the averaged waveform. If False, 
+            average - If True, return a single vector of the averaged waveform. If False,
                       return an array of all the waveforms.
             mode    - 'same': the average is only done on same ids --> return {'eventids':average};
                       'all': for all ids in the eventdict the average from all ananlog signals is returned --> return {'eventids':{'analogsignal_ids':average}}
@@ -857,9 +855,9 @@ class AnalogSignalList(object):
             analogsignal_ids = when given only perform average on these ids
             display - if True, a new figure is created for each average. Could also be a subplot.
             ylim    - ylim of the plot
-            kwargs  - dictionary contening extra parameters that will be sent to the plot 
+            kwargs  - dictionary contening extra parameters that will be sent to the plot
                       function
-            
+
         Examples
             >> vmlist.event_triggered_average(spikelist, average=False, t_min = 50, t_max = 150, mode = 'same')
             >> vmlist.event_triggered_average(spikelist, average=True, mode = 'all')
@@ -869,7 +867,7 @@ class AnalogSignalList(object):
             eventdict = eventdict.spiketrains
         figure   = get_display(display)
         subplotcount = 1
-        
+
         if events_ids is None:
             events_ids = eventdict.keys()
         if analogsignal_ids is None:
@@ -880,13 +878,13 @@ class AnalogSignalList(object):
         results = {}
 
         first_done = False
-        
+
         for id in events_ids:
             events = eventdict[id]
             if len(events) <= 0:
                 continue
             if mode is 'same':
-                
+
                 if self.analog_signals.has_key(id) and id in analogsignal_ids:
                     sp = pylab.subplot(x,y,subplotcount)
                     results[id] = self.analog_signals[id].event_triggered_average(events,average=average,t_min=t_min,t_max=t_max,display=sp,kwargs=kwargs)
@@ -916,23 +914,23 @@ class VmList(AnalogSignalList):
     def plot(self, id_list=None, v_thresh=None, display=True, kwargs={}):
         """
         Plot all cells in the AnalogSignalList defined by id_list
-        
+
         Inputs:
-            id_list - can be a integer (and then N cells are randomly selected) or a 
+            id_list - can be a integer (and then N cells are randomly selected) or a
                       list of ids. If None, we use all the ids of the SpikeList
-            v_thresh- For graphical purpose, plot a spike when Vm > V_thresh. If None, 
+            v_thresh- For graphical purpose, plot a spike when Vm > V_thresh. If None,
                       just plot the raw Vm
             display - if True, a new figure is created. Could also be a subplot
-            kwargs  - dictionary contening extra parameters that will be sent to the plot 
+            kwargs  - dictionary contening extra parameters that will be sent to the plot
                       function
-        
+
         Examples:
             >> z = subplot(221)
             >> aslist.plot(5, v_thresh = -50, display=z, kwargs={'color':'r'})
         """
         subplot   = get_display(display)
         id_list   = self._AnalogSignalList__sub_id_list(id_list)
-        time_axis = self.time_axis()  
+        time_axis = self.time_axis()
         if not subplot or not HAVE_MATPLOTLIB:
             print MATPLOTLIB_ERROR
         else:
@@ -957,21 +955,21 @@ class CurrentList(AnalogSignalList):
     def plot(self, id_list=None, v_thresh=None, display=True, kwargs={}):
         """
         Plot all cells in the AnalogSignalList defined by id_list
-        
+
         Inputs:
-            id_list - can be a integer (and then N cells are randomly selected) or a 
+            id_list - can be a integer (and then N cells are randomly selected) or a
                       list of ids. If None, we use all the ids of the SpikeList
             display - if True, a new figure is created. Could also be a subplot
-            kwargs  - dictionary contening extra parameters that will be sent to the plot 
+            kwargs  - dictionary contening extra parameters that will be sent to the plot
                       function
-        
+
         Examples:
             >> z = subplot(221)
             >> aslist.plot(5, display=z, kwargs={'color':'r'})
         """
         subplot   = get_display(display)
         id_list   = self._AnalogSignalList__sub_id_list(id_list)
-        time_axis = self.time_axis()  
+        time_axis = self.time_axis()
         if not subplot or not HAVE_PYLAB:
             print PYLAB_ERROR
         else:
@@ -988,21 +986,21 @@ class ConductanceList(AnalogSignalList):
     def plot(self, id_list=None, v_thresh=None, display=True, kwargs={}):
         """
         Plot all cells in the AnalogSignalList defined by id_list
-        
+
         Inputs:
-            id_list - can be a integer (and then N cells are randomly selected) or a 
+            id_list - can be a integer (and then N cells are randomly selected) or a
                       list of ids. If None, we use all the ids of the SpikeList
             display - if True, a new figure is created. Could also be a subplot
-            kwargs  - dictionary contening extra parameters that will be sent to the plot 
+            kwargs  - dictionary contening extra parameters that will be sent to the plot
                       function
-        
+
         Examples:
             >> z = subplot(221)
             >> aslist.plot(5, display=z, kwargs={'color':'r'})
         """
         subplot   = get_display(display)
         id_list   = self._AnalogSignalList__sub_id_list(id_list)
-        time_axis = self.time_axis()  
+        time_axis = self.time_axis()
         if not subplot or not HAVE_PYLAB:
             print PYLAB_ERROR
         else:
@@ -1021,26 +1019,26 @@ def load_conductancelist(user_file, id_list=None, dt=None, t_start=None, t_stop=
     """
     Returns TWO ConductanceList objects from a file. One for the excitatory and the other for
     the inhibitory conductance.
-    If the file has been generated by PyNN, 
+    If the file has been generated by PyNN,
     a header should be found with following parameters:
-     ---> dims, dt, id of the first cell, id of the last cell. 
+     ---> dims, dt, id of the first cell, id of the last cell.
     They must be specified otherwise.  Then the classical PyNN format for text file is:
      ---> one line per event:  data value, GID
-    
+
     Inputs:
         user_file - the user_file object with read/write methods. By defaults, if a string
                     is provided, a StandardTextFile object is created
-        id_list  - the list of the recorded ids. Can be an int (meaning cells in 
-                   the range (0,..,N)), or a list. 
+        id_list  - the list of the recorded ids. Can be an int (meaning cells in
+                   the range (0,..,N)), or a list.
         dims     - if the cells were aranged on a 2/3D grid, a tuple with the dimensions
         dt       - the discretization step, in ms
         t_start  - begining of the simulation, in ms.
         t_stop   - end of the simulation, in ms
 
-    If dims, dt, t_start, t_stop or id_list are None, they will be infered from either 
-    the data or from the header. All times are in milliseconds. 
+    If dims, dt, t_start, t_stop or id_list are None, they will be infered from either
+    the data or from the header. All times are in milliseconds.
     The format of the file (text, pickle or hdf5) will be inferred automatically
-    
+
     Examples:
         >> gexc, ginh = load_conductancelist("mydata.dat")
     """
@@ -1050,24 +1048,24 @@ def load_conductancelist(user_file, id_list=None, dt=None, t_start=None, t_stop=
 
 def load_vmlist(user_file, id_list=None, dt=None, t_start=0, t_stop=None, dims=None):
     """
-    Returns a VmList object from a file. If the file has been generated by PyNN, 
+    Returns a VmList object from a file. If the file has been generated by PyNN,
     a header should be found with following parameters:
-     ---> dims, dt, id of the first cell, id of the last cell. 
+     ---> dims, dt, id of the first cell, id of the last cell.
     They must be specified otherwise.  Then the classical PyNN format for text file is:
      ---> one line per event:  data value, GID
-    
+
     Inputs:
         user_file - the user_file object with read/write methods. By defaults, if a string
                     is provided, a StandardTextFile object is created
-        id_list  - the list of the recorded ids. Can be an int (meaning cells in 
-                   the range (0,..,N)), or a list. 
+        id_list  - the list of the recorded ids. Can be an int (meaning cells in
+                   the range (0,..,N)), or a list.
         dims     - if the cells were aranged on a 2/3D grid, a tuple with the dimensions
         dt       - the discretization step, in ms
         t_start  - begining of the simulation, in ms.
         t_stop   - end of the simulation, in ms
 
-    If dims, dt, t_start, t_stop or id_list are None, they will be infered from either 
-    the data or from the header. All times are in milliseconds. 
+    If dims, dt, t_start, t_stop or id_list are None, they will be infered from either
+    the data or from the header. All times are in milliseconds.
     The format of the file (text, pickle or hdf5) will be inferred automatically
     """
     analog_loader = DataHandler(user_file)
@@ -1076,24 +1074,24 @@ def load_vmlist(user_file, id_list=None, dt=None, t_start=0, t_stop=None, dims=N
 
 def load_currentlist(user_file, id_list=None, dt=None, t_start=None, t_stop=None, dims=None):
     """
-    Returns a CurrentList object from a file. If the file has been generated by PyNN, 
+    Returns a CurrentList object from a file. If the file has been generated by PyNN,
     a header should be found with following parameters:
-     ---> dims, dt, id of the first cell, id of the last cell. 
+     ---> dims, dt, id of the first cell, id of the last cell.
     They must be specified otherwise.  Then the classical PyNN format for text file is:
      ---> one line per event:  data value, GID
-    
+
     Inputs:
         user_file - the user_file object with read/write methods. By defaults, if a string
                     is provided, a StandardTextFile object is created
-        id_list  - the list of the recorded ids. Can be an int (meaning cells in 
-                   the range (0,..,N)), or a list. 
+        id_list  - the list of the recorded ids. Can be an int (meaning cells in
+                   the range (0,..,N)), or a list.
         dims     - if the cells were aranged on a 2/3D grid, a tuple with the dimensions
         dt       - the discretization step, in ms
         t_start  - begining of the simulation, in ms.
         t_stop   - end of the simulation, in ms
 
-    If dims, dt, t_start, t_stop or id_list are None, they will be infered from either 
-    the data or from the header. All times are in milliseconds. 
+    If dims, dt, t_start, t_stop or id_list are None, they will be infered from either
+    the data or from the header. All times are in milliseconds.
     The format of the file (text, pickle or hdf5) will be inferred automatically
     """
     analog_loader = DataHandler(user_file)

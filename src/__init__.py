@@ -74,6 +74,10 @@ dependencies = {'pylab': {'website': 'http://matplotlib.sourceforge.net/',
                          'is_present': False, 'check': False},
                 'IPython': {'website': 'http://ipython.scipy.org/',
                             'is_present': False, 'check': False},
+                'interval': {'website': 'http://pypi.python.org/pypi/interval/1.0.0',
+                            'is_present': False, 'check': False},
+                'TableIO' : {'website': 'http://kochanski.org/gpk/misc/TableIO.html', 
+                                'is_present': False, 'check': False},                
                 ## Add here your extensions ###
                }
 

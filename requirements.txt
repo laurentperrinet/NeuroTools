@@ -3,4 +3,6 @@ scipy
 matplotlib
 IPython
 tables>=1.4
+rpy
 rpy2
+interval

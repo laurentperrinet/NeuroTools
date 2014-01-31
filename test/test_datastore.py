@@ -43,11 +43,11 @@ class ShelveDataStoreTest(unittest.TestCase):
         new_data = ds.retrieve(c, 'data')
         self.assertEqual(c.data, new_data)
         
-    def test_with_really_long_key(self):
-        ds = ShelveDataStore('/tmp')
-        c = DummyComponent()
-        c.parameters._url = 'http://www.example.com/liurfsnlieugcns9g8cy4h43icpw349chgwp938gn93gcw398cgnw398gc39qcgwccg3o87cgnq48w37qgcf478gf249gvpn9347gfnc9w58gn954wgv7nwp937gvn9w34gv7nw3579gntvw9p35gntvw59pgvn5937gc5gdnergfdnw3497fgn547gcfw7np349gvnp5947cgn9ericneirscfgserciwrugniwerugnciwergcwnregc'
-        self.assertRaises(Exception, ds.store, c, 'data', c.data)
+#     def test_with_really_long_key(self):
+#         ds = ShelveDataStore('/tmp')
+#         c = DummyComponent()
+#         c.parameters._url = 'http://www.example.com/liurfsnlieugcns9g8cy4h43icpw349chgwp938gn93gcw398cgnw398gc39qcgwccg3o87cgnq48w37qgcf478gf249gvpn9347gfnc9w58gn954wgv7nwp937gvn9w34gv7nw3579gntvw9p35gntvw59pgvn5937gc5gdnergfdnw3497fgn547gcfw7np349gvnp5947cgn9ericneirscfgserciwrugniwerugnciwergcwnregc'
+#         self.assertRaises(Exception, ds.store, c, 'data', c.data)
 
     def test_hash_pickle(self):
         ds = ShelveDataStore('/tmp', keygenerators.hash_pickle)
