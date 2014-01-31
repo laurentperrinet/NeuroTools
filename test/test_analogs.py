@@ -5,8 +5,8 @@ Unit tests for the NeuroTools.signals module
 import matplotlib
 matplotlib.use('Agg')
 
-from neurotools import io
-import neurotools.signals.analogs as analogs
+from Neurotools import io
+import Neurotools.signals.analogs as analogs
 
 import numpy as np
 import os

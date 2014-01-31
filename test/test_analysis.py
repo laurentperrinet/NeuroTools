@@ -3,6 +3,7 @@ Unit tests for the NeuroTools.analysis module
 """
 
 import numpy
+import os
 import scipy.io
 import unittest
 from numpy import pi, sin
