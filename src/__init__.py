@@ -24,7 +24,7 @@ stgen
     Various stochastic process generators relevant for Neuroscience
     (OU, poisson, inhomogenous gamma, ...).
 io
-    Neurotools support for reading and writing of files in various formats.
+    NeuroTools support for reading and writing of files in various formats.
 plotting
     Routines for plotting and visualization.
 datastore
@@ -34,13 +34,13 @@ datastore
 Subpackage specific documentation is available by importing the
 subpackage, and requesting help on it::
 
-  >>> import neurotools.signals
-  >>> help(neurotools.signals)
+  >>> import NeuroTools.signals
+  >>> help(NeuroTools.signals)
   ... # doctest: +SKIP
 
 Utilities
 ---------
-neurotools contains some fancy logging and dependency checking mechamisms,
+NeuroTools contains some fancy logging and dependency checking mechamisms,
 at least for now (might remove them soon).
 
 """

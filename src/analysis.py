@@ -4,7 +4,7 @@ NeuroTools.analysis
 
 A collection of analysis functions that may be used by NeuroTools.signals or other packages.
 
-.. currentmodule:: neurotools.analysis
+.. currentmodule:: NeuroTools.analysis
 
 Classes
 -------
@@ -26,7 +26,7 @@ Functions
 
 import numpy as np
 
-from Neurotools import check_dependency
+from NeuroTools import check_dependency
 
 HAVE_MATPLOTLIB = check_dependency('matplotlib')
 if HAVE_MATPLOTLIB:

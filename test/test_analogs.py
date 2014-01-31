@@ -5,13 +5,13 @@ Unit tests for the NeuroTools.signals module
 import matplotlib
 matplotlib.use('Agg')
 
-from Neurotools import io
-import Neurotools.signals.analogs as analogs
+from NeuroTools import io
+import NeuroTools.signals.analogs as analogs
 
 import numpy as np
 import os
 import unittest
-from neurotools.__init__ import check_numpy_version, check_dependency
+from NeuroTools.__init__ import check_numpy_version, check_dependency
 newnum = check_numpy_version()
 
 ENABLE_PLOTS = check_dependency('pylab')
