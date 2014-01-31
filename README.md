@@ -77,7 +77,7 @@ Documentation
 =============
 
 
-For documentation see the ``doc`` folder or http://neuralensemble.org/trac/NeuroTools.
+For documentation see the ``doc`` folder or http://packages.python.org/NeuroTools
 
 For examples see the ``examples`` folder.
 
