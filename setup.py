@@ -14,7 +14,6 @@ setup(
                 'NeuroTools.spike2.sonpy',
                 'NeuroTools.datastore',
                 'NeuroTools.parameters',
-#                 'NeuroTools.datastore.django_orm',
                 'NeuroTools.optimize',
                ],
     package_data={'NeuroTools': ['doc/*.rst', 'README.rst']},
