@@ -74,7 +74,7 @@ if __name__ == "__main__":
         sys.exit(1)
     
     # Run test
-    exec("from NeuroTools.%s import *" % docfile.replace('.txt',''))
+    exec("from NeuroTools.%s import *" % docfile.replace('.md',''))
     mytestfile(docfile, globs=globals(), optionflags=optionflags, strict=options.strict)
 
     sys.exit(0)

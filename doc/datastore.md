@@ -39,21 +39,3 @@ using, say, ``shelve`` directly::
        (``shelve``, a database, the filesystem), and the interface remains the
        same.
     
-  
-Creating a datastore
-~~~~~~~~~~~~~~~~~~~~
-
-Two different storage backends are currently available, ``ShelveDataStore`` and
-``DjangoORMDataStore``, and more will be added in future. It is also intended to
-be easy to write your own, custom storage backend. Whichever backend is used,
-after you have created your datastore, the interface is the same. For this
-example we will use the ``ShelveDataStore``::
-
-    >>> from NeuroTools.datastore import ShelveDataStore
-    >>> datastore = ShelveDataStore(root_dir="/tmp")
-    
-Here we specify that the ``shelve`` files will be created in ``/tmp``. Now let
-us create a simple component whose data we wish to store::
-
-    >>> class SimpleComponent(object):
-    ...     def __init__(self, parameters, 
