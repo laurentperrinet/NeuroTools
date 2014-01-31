@@ -1,32 +1,27 @@
 NeuroTools
 ==========
 
-NeuroTools is not a neural simulator, but rather a collection of tools
-to support all tasks associated with a neural simulation project which
-are not handled by the simulation engine. NeuroTools is written in
-Python, and works best with PyNN, or one of the growing list of
-simulation engines with a Python front-end such as NEURON, NEST,
-PCSIM, FACETS Neuromorphic VLSI, Brian, MOOSE/GENESIS,
-Neurospaces/GENESIS. NeuroTools provides modules to facilitate
-simulation setup, parameterization and instrumentation, and data
-management, analysis and visualization. The data-related tools are
-equally suited to analysis of experimental data, although that is not
-the primary motivation for their development.
+NeuroTools is a collection of tools to support all tasks associated with the
+analysis of neural activity - from neurophysiology to neural simulations.
+
+NeuroTools is written in Python, and works best with PyNN, or one of the growing
+list of simulation engines with a Python front-end such as NEURON, NEST, PCSIM,
+FACETS Neuromorphic VLSI, Brian, MOOSE/GENESIS, Neurospaces/GENESIS. NeuroTools
+provides modules to facilitate simulation setup, parameterization and
+instrumentation, and data management, analysis and visualization. The
+data-related tools are equally suited to analysis of experimental data, although
+that is not the primary motivation for their development.
 
 NeuroTools aims to:
 
-1. increase the productivity of individual modellers by automating,
-   simplifying, and establishing best-practices for common tasks,
+1. increase the productivity of individual modellers by automating, simplifying,
+   and establishing best-practices for common tasks,
 
-2. increase the productivity of the neuroscience modelling
-   community by reducing the amount of code duplication across
-   simulation communities, 
+2. increase the productivity of the neuroscience modelling community by reducing
+   the amount of code duplication across simulation communities, 
 
-3. increase the reliability of data
-   analysis tools leveraging Linus's law: "given enough eyeballs, all
-   bugs are shallow."
-
-
+3. increase the reliability of data analysis tools leveraging Linus's law:
+   "given enough eyeballs, all bugs are shallow."
 
 License
 =======
@@ -51,7 +46,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 The GNU General Public License does not permit this software to be
 redistributed in proprietary programs.
 
-See source:trunk/LICENSE.
+See ``LICENSE``.
 
 
 Contributing to NeuroTools
@@ -60,12 +55,19 @@ Contributing to NeuroTools
 If you are interested in participating in NeuroTools development, please see
 the webpage at http://neuralensemble.org/NeuroTools
 
+Related projects
+================
 
+NeuroTools has evolved in different flavours:
+
+- a legacy version @ https://neuralensemble.kip.uni-heidelberg.de/svn/NeuroTools
+- a fork by Trevor Bekolay: https://github.com/tbekolay/neurotools
+- a future place will be hosted on the NeuralEnsemble github: https://github.com/NeuralEnsemble/NeuroTools
 
 Installation
 ============
 
-For installation instructions, see the INSTALL file. 
+For installation instructions, see the ``INSTALL`` file. 
 
 
 
