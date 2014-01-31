@@ -299,7 +299,7 @@ def make_kernel(form, sigma, time_stamp_resolution, direction=1):
         assume optional parameter `direction`.
     sigma : float
         Standard deviation of the distribution associated with kernel shape.
-        This parameter defines the time resolution of the kernel estimate
+        This parameter defines the time resolution (in ms) of the kernel estimate
         and makes different kernels comparable (cf. [1] for symetric kernels).
         This is used here as an alternative definition to the cut-off
         frequency of the associated linear filter.
@@ -364,61 +364,52 @@ def make_kernel(form, sigma, time_stamp_resolution, direction=1):
 
     assert direction in (1,-1), "direction must be either 1 or -1"
 
-    sigma = sigma / 1000. #convert to SI units
+    SI_sigma = sigma / 1000. #convert to SI units (ms -> s)
 
-    time_stamp_resolution = time_stamp_resolution / 1000. #convert to SI units
+    SI_time_stamp_resolution = time_stamp_resolution / 1000. #convert to SI units (ms -> s)
 
-    norm = 1./time_stamp_resolution
+    norm = 1./SI_time_stamp_resolution
 
     if form.upper() == 'BOX':
-        w = 2.0 * sigma * np.sqrt(3)
-        width = 2 * np.floor(w / 2.0 / time_stamp_resolution) + 1  # always odd number of bins
+        w = 2.0 * SI_sigma * np.sqrt(3)
+        width = 2 * np.floor(w / 2.0 / SI_time_stamp_resolution) + 1  # always odd number of bins
         height = 1. / width
         kernel = np.ones((1, width)) * height  # area = 1
 
     elif form.upper() == 'TRI':
-        w = 2 * sigma * np.sqrt(6)
-        halfwidth = np.floor(w / 2.0 / time_stamp_resolution)
+        w = 2 * SI_sigma * np.sqrt(6)
+        halfwidth = np.floor(w / 2.0 / SI_time_stamp_resolution)
         trileft = np.arange(1, halfwidth + 2)
         triright = np.arange(halfwidth, 0, -1)  # odd number of bins
         triangle = np.append(trileft, triright)
         kernel = triangle / triangle.sum()  # area = 1
 
     elif form.upper() == 'EPA':
-        w = 2.0 * sigma * np.sqrt(5)
-        halfwidth = np.floor(w / 2.0 / time_stamp_resolution)
+        w = 2.0 * SI_sigma * np.sqrt(5)
+        halfwidth = np.floor(w / 2.0 / SI_time_stamp_resolution)
         base = np.arange(-halfwidth, halfwidth + 1)
         parabula = base**2
         epanech = parabula.max() - parabula  # inverse parabula
         kernel = epanech / epanech.sum()  # area = 1
 
     elif form.upper() == 'GAU':
-        SI_sigma = sigma / 1000.0
-        w = 2.0 * sigma * 2.7  # > 99% of distribution weight
-        halfwidth = np.floor(w / 2.0 / time_stamp_resolution)  # always odd
-        base = np.arange(-halfwidth, halfwidth + 1) / 1000.0 * (
-            time_stamp_resolution)
-        g = np.exp(-(base**2) / 2.0 / SI_sigma**2) / SI_sigma / np.sqrt(
-            2.0 * np.pi)
+        w = 2.0 * SI_sigma * 2.7  # > 99% of distribution weight
+        halfwidth = np.floor(w / 2.0 / SI_time_stamp_resolution)  # always odd
+        base = np.arange(-halfwidth, halfwidth + 1) * SI_time_stamp_resolution
+        g = np.exp(-(base**2) / 2.0 / SI_sigma**2) / SI_sigma / np.sqrt(2.0 * np.pi)
         kernel = g / g.sum()
 
     elif form.upper() == 'ALP':
-        SI_sigma = sigma / 1000.0
-        w = 5.0 * sigma
-        alpha = np.arange(1, (2.0 * np.floor(
-            (w / time_stamp_resolution / 2.0)) + 1) + 1) / 1000.0 * \
-        time_stamp_resolution
-        alpha = (2.0 / SI_sigma**2) * alpha * np.exp(-alpha * np.sqrt(2) \
-                                                        / SI_sigma)
+        w = 5.0 * SI_sigma
+        alpha = np.arange(1, (2.0 * np.floor(w / SI_time_stamp_resolution / 2.0) + 1) + 1) * SI_time_stamp_resolution
+        alpha = (2.0 / SI_sigma**2) * alpha * np.exp(-alpha * np.sqrt(2) / SI_sigma)
         kernel = alpha / alpha.sum()  # normalization
         if direction == -1:
             kernel = np.flipud(kernel)
 
     elif form.upper() == 'EXP':
-        SI_sigma = sigma / 1000.0
-        w = 5.0 * sigma
-        expo = np.arange(1, (2.0 * np.floor(w / time_stamp_resolution / (
-            2.0)) + 1) + 1) / 1000.0 * time_stamp_resolution
+        w = 5.0 * SI_sigma
+        expo = np.arange(1, (2.0 * np.floor(w / SI_time_stamp_resolution / 2.0) + 1) + 1) * SI_time_stamp_resolution
         expo = np.exp(-expo / SI_sigma)
         kernel = expo / expo.sum()
         if direction == -1:
