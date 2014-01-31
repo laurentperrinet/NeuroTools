@@ -2,19 +2,24 @@
 Unit tests for the NeuroTools.stgen module
 """
 
+import matplotlib
+matplotlib.use('Agg')
+
 import unittest
 from NeuroTools import stgen
 from NeuroTools import signals
 import numpy
 
+
 class StatisticalError(Exception):
     pass
+
 
 class StGenInitTest(unittest.TestCase):
 
     def setUp(self):
         pass
-    
+
     def tearDown(self):
         pass
 
@@ -24,7 +29,6 @@ class StGenInitTest(unittest.TestCase):
         """
         stg = stgen.StGen()
         assert isinstance(stg.rng, numpy.random.RandomState)
-
 
     def testMethodsBasic(self):
 
@@ -41,17 +45,18 @@ class StGenInitTest(unittest.TestCase):
         assert isinstance(st, numpy.ndarray)
 
         st = stg.poisson_generator(rate,0.0,t_stop,array=True,debug=True)
-        
+
         assert isinstance(st[0], numpy.ndarray)
         assert isinstance(st[1], list)
 
         st = stg.poisson_generator(rate,0.0,t_stop,debug=True)
-        
+
         assert isinstance(st[0], signals.SpikeTrain)
         assert isinstance(st[1], list)
 
-
     def testStatsPoisson(self):
+        # TODO: failing -- do something more robust than this.
+        #       e.g., multiple runs, tolerance value.
 
         # this is a statistical test with non-zero chance of failure
 

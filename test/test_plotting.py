@@ -1,6 +1,8 @@
 """
 Unit tests for the NeuroTools.plotting module
 """
+import matplotlib
+matplotlib.use('Agg')
 
 import unittest
 from NeuroTools import plotting
@@ -18,7 +20,7 @@ class PylabParamsTest(unittest.TestCase):
         ratio = 0.1234
         text_fontsize = 10 
         tick_labelsize = 8
-        useTex = True
+        useTex = False
 
         inches_per_pt = 1.0/72.27               # Convert pt to inch
         fig_width = fig_width_pt*inches_per_pt  # width in inches
@@ -26,14 +28,15 @@ class PylabParamsTest(unittest.TestCase):
 
         testDict = {
             'axes.labelsize'  : text_fontsize,
-            'text.fontsize'   : text_fontsize,
+            'font.size'       : text_fontsize,
             'xtick.labelsize' : tick_labelsize,
             'ytick.labelsize' : tick_labelsize,
             'text.usetex'     : useTex,
             'figure.figsize'  : [fig_width, fig_height]}
 
-        plotting.set_pylab_params(fig_width_pt=fig_width_pt, ratio=ratio, text_fontsize=text_fontsize, \
-            tick_labelsize=tick_labelsize, useTex=useTex)
+        plotting.set_pylab_params(fig_width_pt=fig_width_pt, ratio=ratio,
+                                  text_fontsize=text_fontsize,
+                                  tick_labelsize=tick_labelsize, useTex=useTex)
         for k in testDict.keys():
             assert pylab.rcParams.has_key(k)
             assert pylab.rcParams[k] == testDict[k]
