@@ -1,4 +1,3 @@
-=========================
 The ``parameters`` module
 =========================
 
@@ -11,7 +10,6 @@ simulation project, since the parameter sets can be stored in a database,
 displayed in a GUI, etc.
 
 
-----------
 Parameters
 ----------
 
@@ -101,8 +99,6 @@ pick values from a particular random distribution. Three classes are available:
 class in the `pyNN.random` module. We should look at the best ways to avoid
 duplication].
 
-
---------------
 Parameter sets
 --------------
 
@@ -141,7 +137,6 @@ as an argument to the pyramidal cell object, which doesn't care about
 ``v1.layer4.spinystellate``, let alone ``retina.ganglioncell.magno.tau_m``
 (while ``v1_layer5_pyramidal`` is just a ``NameError``).
 
-
 The ``ParameterSet`` class
 --------------------------
 
@@ -168,7 +163,7 @@ strings, may also be parameter values.
 
 Navigation
 ~~~~~~~~~~
-    
+
 Individual parameters may be accessed/set using dot notation::
 
     >>> P.sim.dt
@@ -346,4 +341,11 @@ essentially infinite number of points to be generated::
     {'y': 2.90108202422, 'x': -0.388218831787, 'z': -68.6681724449}
 
 
-*This document was last updated for r274.*
+Autodoc
+-------
+
+.. automodule:: neurotools.parameters
+   :members:
+   :undoc-members:
+
+

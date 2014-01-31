@@ -1,11 +1,9 @@
-====================
 The ``stgen`` module
 ====================
 
 This module offers various stochastic generators for point processes that can
 be used as spike trains. 
 
----------------
 The StGen class
 ---------------
 
@@ -40,7 +38,6 @@ object has already been created:
 
     >>> st_gen.seed(7654321)
     
-
 Poisson-distributed point processes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -74,3 +71,12 @@ dynamically changing rates:
 This will generate a SpikeTrain object containing spike times with an 
 approximate rate of 50 Hz for one second, followed by 80 Hz for one second, and 
 finally 30 Hz for half a second. Note that t[0] is used as tstart.
+
+Autodoc
+-------
+
+.. automodule:: neurotools.stgen
+   :members:
+   :undoc-members:
+
+
