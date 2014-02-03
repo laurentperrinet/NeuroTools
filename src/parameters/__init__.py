@@ -52,6 +52,7 @@ validators        - A module implementing validation of ParameterSets against Pa
 import copy
 import warnings
 import math
+import numpy
 import operator
 from functools import wraps
 try:
