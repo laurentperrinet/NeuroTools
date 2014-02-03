@@ -182,10 +182,6 @@ Links
 -  `VisionEgg <http://www.visionegg.org/>`_ is a high level interface
    between Python and OpenGL for automatic generation of traditional
    visual stimuli.
--  `PANDORA's
-   Toolbox <http://userwww.service.emory.edu/~cgunay/pandora>`_ is a set
-   of database analysis and visualization tools in MATLAB (c) for
-   simulated and recorded electrophysiological data.
 
 License
 =======
