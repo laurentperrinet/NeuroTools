@@ -199,15 +199,12 @@ class CongruencyValidator(object):
 
     Example::
 
-    validator = CongruencyValidator()
+        validator = CongruencyValidator()
+        try:
+           validator.validate(parameter_set,parameter_schema)
+        except ValidationError, e:
 
-    try:
-       validator.validate(parameter_set,parameter_schema)
-    except ValidationError, e:
-       
-
-    See also: NeuroTools.parameters.ParameterSet, ParameterSchema
-
+    See also: `ParameterSet`, `ParameterSchema`
     """
 
     def __init__(self):
@@ -300,6 +297,7 @@ def congruent_dicts(template, candidate, subset=False, parent_path=''):
 
         # one is a dict, and the other not.
         return False
+
 
 # Add to parameters on import
 NeuroTools.parameters.ParameterSchema = ParameterSchema

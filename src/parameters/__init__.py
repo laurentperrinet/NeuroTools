@@ -49,12 +49,45 @@ validators        - A module implementing validation of ParameterSets against Pa
 
 """
 
-import urllib, copy, warnings, numpy, numpy.random  # to be replaced with srblib
-from urlparse import urlparse
-from NeuroTools import check_dependency
+import copy
+import warnings
+import math
+import operator
+from functools import wraps
+try:
+    from urllib2 import build_opener, install_opener, urlopen, ProxyHandler  # Python 2
+    from urlparse import urlparse
+except ImportError:
+    from urllib.request import build_opener, install_opener, urlopen, ProxyHandler  # Python 3
+    from urllib.parse import urlparse
+
 from NeuroTools.random import ParameterDist, GammaDist, UniformDist, NormalDist
-#from NeuroTools.parameters.validators import schema_checkers_namespace
-#from NeuroTools.parameters.validators import Subclass
+from os import environ, path
+import random
+from copy import copy
+
+try:
+    basestring
+except NameError:
+    basestring = str
+
+try:
+    next                  # Python 3
+except NameError:
+    def next(obj):        # Python 2
+        return obj.next()
+
+
+__version__ = '0.2.1'
+
+
+if 'HTTP_PROXY' in environ:
+    HTTP_PROXY = environ['HTTP_PROXY']  # user has to define it
+    ''' next lines are for communication to urllib of proxy information '''
+    proxy_support = ProxyHandler({"https": HTTP_PROXY})
+    opener = build_opener(proxy_support, HTTPHandler)
+    install_opener(opener)
+
 
 def isiterable(x):
     return (hasattr(x, '__iter__') and not isinstance(x, basestring))
