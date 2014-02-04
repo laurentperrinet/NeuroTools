@@ -17,4 +17,4 @@ install:
     - pip install --user -r requirements.txt --use-mirrors
     - pip install --user . --use-mirrors
 script:
-    - nosetests --with-coverage --cover-package=neurotools
+    - nosetests --with-coverage --cover-package=NeuroTools
