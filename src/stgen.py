@@ -20,7 +20,6 @@ shotnoise_fromspikes - Convolves the provided spike train with shot decaying exp
 gamma_hazard - Compute the hazard function for a gamma process with parameters a,b.
 """
 
-
 from NeuroTools import check_dependency
 from signals import SpikeTrain, AnalogSignal
 from numpy import array, log
@@ -50,17 +49,20 @@ def gamma_hazard_scipy(x, a, b, dt=1e-4):
 
     if check_dependency('scipy'):
         from scipy.special import gammaincc
-    Hpre = -log(gammaincc(a,(x-dt)/b))
-    Hpost = -log(gammaincc(a,(x+dt)/b))
-    val =  0.5*(Hpost-Hpre)/dt
+        Hpre = -log(gammaincc(a,(x-dt)/b))
+        Hpost = -log(gammaincc(a,(x+dt)/b))
+        val =  0.5*(Hpost-Hpre)/dt
 
-    if isinstance(val,numpy.ndarray):
-        val[numpy.isnan(val)] = 1.0/b
-        return val
-    elif numpy.isnan(val):
-        return 1.0/b
+        if isinstance(val,numpy.ndarray):
+            val[numpy.isnan(val)] = 1.0/b
+            return val
+        elif numpy.isnan(val):
+            return 1.0/b
+        else:
+            return val
     else:
-        return val
+        raise ImportError("gamma_hazard_scipy requires SciPy")
+
 
 
 def gamma_hazard(x, a, b, dt=1e-4):
@@ -113,9 +115,13 @@ def gamma_hazard(x, a, b, dt=1e-4):
         val =  0.5*(Hpost-Hpre)/dt
 
         return val
-    else:
-        raise ImportError("gamma_hazard requires RPy or RPy2 (http://rpy.sourceforge.net/)")
 
+    elif check_dependency('scipy'):
+    
+        return gamma_hazard_scipy(x, a, b, dt=dt)
+
+    else:
+        raise ImportError("gamma_hazard requires SciPy, RPy or RPy2 (http://rpy.sourceforge.net/)")
 
     
 
@@ -176,7 +182,7 @@ class StGen:
 
         if seed != None:
             self.rng.seed(seed)
-        self.rpy_checked = False
+        self.dep_checked = False
 
     def seed(self,seed):
         """ seed the gsl rng with a given seed """
@@ -449,15 +455,13 @@ class StGen:
         rn = numpy.array(self.rng.uniform(0, 1, len(ps)))
 
         # instantaneous a,b for each spike
-
-        idx=numpy.searchsorted(t,ps)-1
+        idx = numpy.searchsorted(t,ps)-1
         spike_a = a[idx]
         spike_b = b[idx]
 
         keep = numpy.zeros(shape(ps),bool)
 
         # thin spikes
-
         i = 0
         t_last = 0.0
         t_i = 0
@@ -471,15 +475,12 @@ class StGen:
                 keep[i] = True
             i+=1
 
-
         spike_train = ps[keep]
 
         if array:
             return spike_train
 
         return SpikeTrain(spike_train, t_start=t[0],t_stop=t_stop)
-
-
     # use slow python implementation for the time being
     # TODO: provide optimized C/weave implementation if possible
       
@@ -519,13 +520,13 @@ class StGen:
             inh_poisson_generator, gamma_hazard
         """
 
-        if not self.rpy_checked:
-            self.have_rpy = check_dependency('rpy') or check_dependency('rpy2')
-            self.rpy_checked = True
-        if self.have_rpy:
+        if not self.dep_checked:
+            self.have_dep = check_dependency('rpy') or check_dependency('rpy2') or check_dependency('scipy')
+            self.dep_checked = True
+        if self.have_dep:
             return self._inh_gamma_generator_python(a, b, t, t_stop, array)
         else:
-            raise Exception("inh_gamma_generator is disabled as dependency RPy|RPy2 was not found.")
+            raise Exception("inh_gamma_generator is disabled as dependency SciPy|RPy|RPy2 was not found.")
 
 
 
