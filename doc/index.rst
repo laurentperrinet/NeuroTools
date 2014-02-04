@@ -76,6 +76,9 @@ NeuroTools functionality is modularized as follows:
    module presents a consistent interface for persistent data storage
    (e.g., for caching intermediate results), irrespective of storage
    back-end.
+-  `PANDORA's Toolbox <http://software.incf.org/software/pandora>`_ is a set
+    of database analysis and visualization tools in MATLAB (c) for
+    simulated and recorded electrophysiological data.
 
 See also the
 `ExampleScripts <http://neuralensemble.org/trac/NeuroTools/wiki/ExampleScripts>`_,
